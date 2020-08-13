@@ -57,6 +57,7 @@ int main(int argc, char** argv) {
                     path = string(argv[i]);
                 } else {
                     cout << "\"--credential_info\" specified, but no path was found." << endl;
+                    return -1;
                 }
             }
         }
@@ -64,6 +65,11 @@ int main(int argc, char** argv) {
 
     // Parse setting file
     ifstream input_file(path);
+    if (!input_file.is_open()) {
+        cout << "File path provided as: " << path << endl;
+        cout << "But actual json file is NOT found or cannot be opened by this program." << endl;
+        return -1;
+    }
     Json::Reader json_reader;
     Json::Value main_json;
     if (!json_reader.parse(input_file, main_json)) {
@@ -94,6 +100,7 @@ int main(int argc, char** argv) {
         client.request(request_tpr).then([] (http_response hr) {
         }).wait();
     } catch (const exception& expn) {
+        // Getting Exception but I cannot find why. Maybe problem of Iptime router settings page.
     }
     return 0;
 }
